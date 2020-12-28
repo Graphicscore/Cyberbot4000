@@ -71,8 +71,9 @@ function loadArchiveHashes(callback) {
 
 client.on("message", function (message) {
     if (message.author.bot) return;
-    
-    if(!config.CHANNELS.indexOf(message.channel.id) > -1){
+    //console.log(`channel id ${message.channel.id}`);
+    //console.log(config.CHANNELS.indexOf(message.channel.id));
+    if(config.CHANNELS.indexOf(message.channel.id) == -1){
         return;
     }
 
