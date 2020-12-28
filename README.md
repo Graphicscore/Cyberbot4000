@@ -4,7 +4,8 @@ Cyberpunk 2077 Dev Bot
 Create `config.json`file with content : 
 ```
 {
-    "BOT_TOKEN": "YOUR BOT TOKEN"
+    "BOT_TOKEN": "YOUR BOT TOKEN",
+    "CHANNELS" : [ "ALLOWED DISCORD CHANNEL ID"]
 }
 ```
 

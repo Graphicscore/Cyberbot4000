@@ -26,6 +26,7 @@ var BLOCK_ACTION = false;
 var NEEDS_GENERATION = true;
 
 client.on("ready", function () {
+    console.log(`allowed channels : ${config.CHANNELS}`);
     loadArchiveHashes(() => {
         loadMissingHashes(() => {
             isReady = true;
@@ -70,6 +71,11 @@ function loadArchiveHashes(callback) {
 
 client.on("message", function (message) {
     if (message.author.bot) return;
+    
+    if(!config.CHANNELS.indexOf(message.channel.id) > -1){
+        return;
+    }
+
     if (message.content.startsWith(prefix)) {
         processCommand(message);
     } else if (message.attachments.size > 0) {
