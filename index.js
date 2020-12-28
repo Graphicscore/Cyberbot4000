@@ -235,10 +235,10 @@ async function processAttachment(message) {
                                 csvWriter.writeRecords(revert)       // returns a promise
                                     .then(() => {
                                         BLOCK_ACTION = false;
-                                        progressMessage.edit(`Processing complete! ${results.size} new hashes , ${existingHashCount} existing hashes`);
+                                        progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
                                     });
                             } else {
-                                progressMessage.edit(`Processing complete! ${results.size} new hashes , ${existingHashCount} existing hashes`);
+                                progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
                             }
                         });
                 }
