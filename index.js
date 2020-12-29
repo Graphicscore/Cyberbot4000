@@ -106,7 +106,7 @@ async function processCommand(message) {
 
     if (command === "missing") {
         var content = "";
-        content += "`Missing Hashes:` https://graphicscore.dev/cyberpunk/cyberbot/data/missinghashes.txt\n"
+        content += `Missing Hashes: ${config.DATA_URL}/missinghashes.txt\n`
         message.channel.send(content);
     } else if (command === "hashes") {
         if (BLOCK_ACTION) {
@@ -119,9 +119,9 @@ async function processCommand(message) {
         var content = "";
 
         content = "> Hash Archive\n";
-        content += "`CP77Tools File:` https://graphicscore.dev/cyberpunk/cyberbot/data/archivehashes.csv\n";
-        content += "`Targz Archive:` https://graphicscore.dev/cyberpunk/cyberbot/data/archivehashes.tar.gz\n";
-        content += "`Missing Hashes:` https://graphicscore.dev/cyberpunk/cyberbot/data/missinghashes.txt\n"
+        content += `\`CP77Tools File:\` ${config.DATA_URL}/archivehashes.csv\n`;
+        content += `\`Targz Archive:\` ${config.DATA_URL}/archivehashes.tar.gz\n`;
+        content += `\`Missing Hashes:\` ${config.DATA_URL}/missinghashes.txt\n`
 
         if (!NEEDS_GENERATION) {
             progressMessage.edit(content);
