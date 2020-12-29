@@ -267,9 +267,7 @@ function generateFiles(callback) {
                                     revert.push([v, k]);
                                     if(v !== "String") {
                                         txtStream.write(v + "\r\n");
-                                    }
-                                    if(k !== "Hash") {
-                                        looseStream.write(k + "\r\n");
+                                        looseStream.write(v + "\r\n");
                                     }
                                 }
                                 txtStream.end(() => {
