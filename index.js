@@ -182,7 +182,7 @@ async function processAttachment(message) {
     var attachment = message.attachments.first();
     if (attachment.size > 0 && attachment.url != null) {
         var progressMessage = await message.channel.send("Processing ...");
-        if (attachment.name === "Cyberpunk2077.log") { //potential new hashes
+        if (attachment.name.indexOf("Cyberpunk2077") > -1 && attachment.name.indexOf(".log") > -1) { //potential new hashes
             BLOCK_ACTION = true;
             downloadFile(attachment.url, TMP_FILE, (err) => {
                 if (err != null) {
