@@ -1,0 +1,7 @@
+{
+    "BOT_TOKEN": "DISCORD_BOT_TOKEN",
+    "DATA_URL": "https://yourserver.com/path/cyberbot/data",
+    "CHANNELS": [
+        "ALLOWED DISCORD CHANNEL IDS"
+      ]
+}
