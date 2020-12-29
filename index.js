@@ -219,27 +219,10 @@ async function processAttachment(message) {
                                     archivehashes.set(k, v);
                                 }
 
-                                var file = fs.createWriteStream('data/missinghashes.txt');
-                                file.on('error', function (err) { console.err(err) });
-                                file.write(missinghashes.join('\r\n'));
-                                file.end();
-
-                                const revert = [];
-                                for (let [k, v] of archivehashes) {
-                                    revert.push([v, k]);
-                                }
-                                console.log(revert);
-
-                                const csvWriter = createCsvWriter({
-                                    path: 'data/archivehashes.csv',
-                                    recordDelimiter: '\r\n'
+                                generateFiles(() => {
+                                    BLOCK_ACTION = false;
+                                            progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
                                 });
-
-                                csvWriter.writeRecords(revert)       // returns a promise
-                                    .then(() => {
-                                        BLOCK_ACTION = false;
-                                        progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
-                                    });
                             } else {
                                 BLOCK_ACTION = false;
                                 progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
@@ -251,6 +234,37 @@ async function processAttachment(message) {
             progressMessage.edit(`Unknown file, please upload Cyberpunk2077.log from your bin folder`)
         }
     }
+}
+
+function generateFiles(callback) {
+    var file = fs.createWriteStream('data/missinghashes.txt');
+                                file.on('error', function (err) { console.err(err) });
+                                file.write(missinghashes.join('\r\n'));
+                                file.end();
+
+                                var txtStream = fs.createWriteStream("data/archivehashes.txt");
+
+                                //revert order for csv, write to txt stream at the same time
+                                const revert = [];
+                                for (let [k, v] of archivehashes) {
+                                    revert.push([v, k]);
+                                    if(v !== "String") {
+                                        txtStream.write(v + "\r\n");
+                                    }
+                                }
+                                txtStream.end(() => {
+                                    console.log(revert);
+                                    const csvWriter = createCsvWriter({
+                                        path: 'data/archivehashes.csv',
+                                        recordDelimiter: '\r\n'
+                                    });
+
+                                    csvWriter.writeRecords(revert)       // returns a promise
+                                        .then(() => {
+                                            //write txt
+                                            callback();
+                                        });
+                                });
 }
 
 function downloadFile(url, dest, cb) {
