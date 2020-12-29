@@ -99,8 +99,6 @@ async function processCommand(message) {
     const command = args.shift().toLowerCase();
     const param = args.shift();
 
-    console.log(param);
-
     if (command === "missing") {
         var content = "";
         content += "`Missing Hashes:` https://graphicscore.dev/cyberpunk/cyberbot/data/missinghashes.txt\n"
