@@ -5,7 +5,7 @@ const csvReader = require('csv-parser')
 const https = require('https');
 const fs = require('fs');
 const config = require("./config.json");
-const targz = require('targz');
+const AdmZip = require('adm-zip');
 
 const client = new Discord.Client();
 
@@ -28,7 +28,7 @@ var NEEDS_GENERATION = true;
 client.on("ready", function () {
     console.log(`allowed channels : ${config.CHANNELS}`);
     //Create tmp folder if not exists
-    if (!fs.existsSync("tmp")){
+    if (!fs.existsSync("tmp")) {
         fs.mkdirSync("tmp");
     }
     //load hashes and missing
@@ -78,7 +78,7 @@ client.on("message", function (message) {
     if (message.author.bot) return;
     //console.log(`channel id ${message.channel.id}`);
     //console.log(config.CHANNELS.indexOf(message.channel.id));
-    if(config.CHANNELS.indexOf(message.channel.id) == -1){
+    if (config.CHANNELS.indexOf(message.channel.id) == -1) {
         return;
     }
 
@@ -109,8 +109,19 @@ async function processCommand(message) {
         content += `Missing Hashes: ${config.DATA_URL}/missinghashes.txt\n`
         message.channel.send(content);
     } else if (command === "hashes") {
+
         if (BLOCK_ACTION) {
             message.reply("I am processing beep boop - please try again in a bit");
+            return;
+        }
+
+        if(param == "--force") {
+            BLOCK_ACTION = true;
+            var progressMessage = await message.reply("Beeeeep booooooop - Crunching data ...");
+            generateFiles(() => {
+                BLOCK_ACTION = false;
+                progressMessage.edit(`Crunch complete - local data generated`);
+            });
             return;
         }
 
@@ -119,18 +130,23 @@ async function processCommand(message) {
         var content = "";
 
         content = "> Hash Archive\n";
-        content += `\`CP77Tools File:\` ${config.DATA_URL}/archivehashes.csv\n`;
-        content += `\`Targz Archive:\` ${config.DATA_URL}/archivehashes.tar.gz\n`;
+        content += `\`CP77Tools File:\` ${config.DATA_URL}/archivehashes.txt\n`;
+        content += `\`Zip Archive:\` ${config.DATA_URL}/archivehashes.zip\n`;
         content += `\`Missing Hashes:\` ${config.DATA_URL}/missinghashes.txt\n`
 
         if (!NEEDS_GENERATION) {
             progressMessage.edit(content);
         } else {
-            targz.compress({
-                src: 'data/archivehashes.csv',
-                dest: 'data/archivehashes.tar.gz'
-            }, function(err){
-                if(err) {
+
+            // creating archives
+            var zip = new AdmZip();
+            // add local file
+            zip.addLocalFile("data/archivehashes.txt");
+            // get everything as a buffer
+            var willSendthis = zip.toBuffer();
+            // or write everything to disk
+            zip.writeZip("data/archivehashes.zip", (err) => {
+                if (err) {
                     console.log(err);
                 } else {
                     NEEDS_GENERATION = false;
