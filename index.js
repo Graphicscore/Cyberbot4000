@@ -27,6 +27,11 @@ var NEEDS_GENERATION = true;
 
 client.on("ready", function () {
     console.log(`allowed channels : ${config.CHANNELS}`);
+    //Create tmp folder if not exists
+    if (!fs.existsSync("tmp")){
+        fs.mkdirSync("tmp");
+    }
+    //load hashes and missing
     loadArchiveHashes(() => {
         loadMissingHashes(() => {
             isReady = true;
