@@ -130,7 +130,7 @@ async function processCommand(message) {
         var content = "";
 
         content = "> Hash Archive\n";
-        content += `\`CP77Tools File:\` ${config.DATA_URL}/archivehashes.txt\n`;
+        content += `\`CP77Tools File:\` ${config.DATA_URL}/loosehashes.txt\n`;
         content += `\`Zip Archive:\` ${config.DATA_URL}/archivehashes.zip\n`;
         content += `\`Missing Hashes:\` ${config.DATA_URL}/missinghashes.txt\n`
 
@@ -259,6 +259,7 @@ function generateFiles(callback) {
                                 file.end();
 
                                 var txtStream = fs.createWriteStream("data/archivehashes.txt");
+                                var looseStream = fs.createWriteStream("data/loosehashes.txt");
 
                                 //revert order for csv, write to txt stream at the same time
                                 const revert = [];
@@ -267,19 +268,25 @@ function generateFiles(callback) {
                                     if(v !== "String") {
                                         txtStream.write(v + "\r\n");
                                     }
+                                    if(k !== "Hash") {
+                                        looseStream.write(k + "\r\n");
+                                    }
                                 }
                                 txtStream.end(() => {
-                                    console.log(revert);
-                                    const csvWriter = createCsvWriter({
-                                        path: 'data/archivehashes.csv',
-                                        recordDelimiter: '\r\n'
-                                    });
-
-                                    csvWriter.writeRecords(revert)       // returns a promise
-                                        .then(() => {
-                                            //write txt
-                                            callback();
+                                    console.log("wrote archivehashes.txt");
+                                    looseStream.end(() => {
+                                        console.log("wrote loosehashes.txt");
+                                        const csvWriter = createCsvWriter({
+                                            path: 'data/archivehashes.csv',
+                                            recordDelimiter: '\r\n'
                                         });
+
+                                        csvWriter.writeRecords(revert)       // returns a promise
+                                            .then(() => {
+                                                //write txt
+                                                callback();
+                                            });
+                                    });
                                 });
 }
 
