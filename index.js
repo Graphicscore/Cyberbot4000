@@ -238,6 +238,7 @@ async function processAttachment(message) {
                                         progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
                                     });
                             } else {
+                                BLOCK_ACTION = false;
                                 progressMessage.edit(`Processing complete! ${results.size} new hashes, ${existingHashCount} existing hashes`);
                             }
                         });
